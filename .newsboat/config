@@ -1,0 +1,6 @@
+auto-reload no
+history-limit 0
+max-items 10
+
+bind-key j down
+bind-key k up
