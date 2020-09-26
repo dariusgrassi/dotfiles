@@ -1,6 +1,14 @@
 auto-reload no
 history-limit 0
-max-items 10
+max-items 20
 
 bind-key j down
 bind-key k up
+macro y set browser "mpv %u" ; open-in-browser ; set browser "elinks %u"
+
+color info green default bold
+color listfocus yellow default
+color listnormal_unread blue default bold
+color listnormal black default
+color listfocus_unread yellow default bold
+color article white default bold
