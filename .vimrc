@@ -6,6 +6,7 @@ call plug#end()
 
 " Configs for TeX preview
 autocmd Filetype tex setl updatetime=1000
+autocmd Filetype tex set tw=72 spell lbr
 let g:livepreview_previewer = 'evince'
 au FileType latex setlocal tw=72
 au FileType latex setlocal spell
@@ -15,7 +16,13 @@ let g:livedown_autorun = 0
 au FileType markdown setlocal tw=72
 au FileType markdown setlocal spell
 
-" aesthetic configs
+" Main configs
+syntax on
+set expandtab sts=4 tabstop=8 sw=4
+set autoindent
+set showmode
+set nocompatible
+set showmatch
 set backspace=indent,eol,start
 set t_Co=256
 set background=dark
@@ -26,6 +33,8 @@ set ruler
 set hlsearch
 set timeoutlen=1000 ttimeoutlen=0
 set relativenumber
+
+" Aesthetic configs
 colo earthburn
 highlight Normal ctermbg=NONE
 highlight nonText ctermbg=NONE
