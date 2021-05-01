@@ -21,6 +21,7 @@ SAVEHIST=10000000
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
+alias brall="brew update && brew upgrade && brew cleanup && brew doctor"
 
 # Basic auto/tab complete:
 autoload -U compinit
@@ -51,3 +52,13 @@ source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 source ~/.bashrc
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Setting up a way to rename yabai spaces from command line
+function rename_space() {
+  yabai -m space $1 --label $2
+  osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "simple-bar-spaces-jsx"'
+}
+rename_space 1 one
+rename_space 2 two
+# usage: rename_space X MY_SPACE_NAME
+# Where X is the space number you want to rename
