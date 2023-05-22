@@ -1,5 +1,5 @@
 call plug#begin('~/.vim/plugged')
-Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
+" Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'shime/vim-livedown'
 Plug 'preservim/nerdtree'
 call plug#end()
@@ -15,6 +15,9 @@ au FileType latex setlocal spell
 let g:livedown_autorun = 0
 au FileType markdown setlocal tw=72
 au FileType markdown setlocal spell
+
+" Bess files
+au BufReadPost *.bess set syntax=python
 
 " Main configs
 syntax on

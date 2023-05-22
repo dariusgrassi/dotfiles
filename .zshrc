@@ -1,7 +1,6 @@
 # ALIASES
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export PATH="/usr/local/opt/ruby/bin:$PATH"
 export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=YES
 
 # ZSH_THEME="agnoster"
@@ -18,10 +17,11 @@ HISTSIZE=10000000
 SAVEHIST=10000000
 
 # Load aliases and shortcuts if existent.
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
 alias brall="brew update && brew upgrade && brew cleanup && brew doctor"
+alias tl="tmux ls"
+alias gs="git status"
+alias -- -="cd -"
+alias python="python3"
 
 # Basic auto/tab complete:
 autoload -U compinit
@@ -32,33 +32,29 @@ compinit
 _comp_options+=(globdots)		# Include hidden files.
 
 # vi mode
-bindkey -v
-bindkey -e
-export KEYTIMEOUT=1
+#bindkey -v
+#bindkey -e
+#export KEYTIMEOUT=1
 
 # Use vim keys in tab complete menu:
 #bindkey -M menuselect 'h' vi-backward-char
 #bindkey -M menuselect 'k' vi-up-line-or-history
 #bindkey -M menuselect 'l' vi-forward-char
 #bindkey -M menuselect 'j' vi-down-line-or-history
-bindkey "^R" history-incremental-pattern-search-backward
+#bindkey "^R" history-incremental-pattern-search-backward
 
 HYPHEN_INSENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 
 # SOURCES
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 source ~/.bashrc
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+export RBENV_ROOT=/usr/local/var/rbenv
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.1.1/bin:$PATH"
+export PATH=$PATH:/Users/dariusgrassi/.spicetify
+export PATH=$PATH:/usr/local/go/bin
 
-# Setting up a way to rename yabai spaces from command line
-function rename_space() {
-  yabai -m space $1 --label $2
-  osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "simple-bar-spaces-jsx"'
-}
-rename_space 1 one
-rename_space 2 two
-# usage: rename_space X MY_SPACE_NAME
-# Where X is the space number you want to rename
