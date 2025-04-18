@@ -1,2 +1,7 @@
-current:
+just run
+
+git clone https://github.com/dariusgrassi/dotfiles.git "$HOME/.dotfiles"
+and then ./link.sh
+
+current configs:
 zshrc
