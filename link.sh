@@ -25,7 +25,7 @@ check_command curl
 # download my dotfiles
 if [ ! -d "$HOME/.dotfiles" ]; then
     echo "Cloning dotfiles repository..."
-    git clone https://github.com/yourusername/dotfiles.git "$HOME/.dotfiles"
+    git clone https://github.com/dariusgrassi/dotfiles.git "$HOME/.dotfiles"
 else
     echo "Updating dotfiles repository..."
     cd "$HOME/.dotfiles" && git pull
