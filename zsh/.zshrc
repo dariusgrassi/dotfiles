@@ -23,11 +23,13 @@ source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 # this enables another prompt plugin, zsh-syntax-highlighting
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# this enables a vi keymap for zsh
+# this enables a vi keymap for zsh; need explicit ctrl R after
 bindkey -v
+bindkey '^R' history-incremental-search-backward
 
 # now i want to make ls have some nice colors
 alias ls='ls --color=auto'
+alias cp='cp -v'
 
 # this starts the zsh completion system
 autoload -Uz compinit && compinit
