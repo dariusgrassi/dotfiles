@@ -59,6 +59,7 @@ fi
 # this enables a vi keymap for zsh; need explicit ctrl R after
 bindkey -v
 bindkey '^R' history-incremental-search-backward
+bindkey '^F' history-incremental-search-forward
 
 # Platform-specific ls aliases
 if [[ "$MACOS" == true ]]; then
