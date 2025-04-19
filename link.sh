@@ -21,22 +21,42 @@ check_command() {
 check_command zsh
 check_command git
 check_command curl
-check_command neovim
+
+# because packages names != command names
+sudo apt-get install -y neovim ripgrep
 
 # link neovim configs
-echo "Linking Neovim configuration files..."
-if [ -d "$HOME/.dotfiles/nvim" ]; then
-  mkdir -p "$HOME/.config"
-  rm -rf "$HOME/.config/nvim"
-  ln -sf "$HOME/.dotfiles/nvim" "$HOME/.config/nvim"
-  echo "Neovim configuration linked successfully."
+# Install latest Neovim using AppImage
+install_neovim() {
+    echo "Installing latest Neovim using AppImage..."
+    mkdir -p "$HOME/.local/bin"
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+    chmod u+x nvim-linux-x86_64.appimage
+    mv nvim-linux-x86_64.appimage "$HOME/.local/bin/nvim"
+    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.zshrc"
+    fi
+    echo "Neovim installed successfully!"
+}
 
-  # Install LazyVim
-  if [ ! -f "$HOME/.config/nvim/lazy-lock.json" ]; then
-    echo "Setting up LazyVim plugin manager..."
-    # First launch of Neovim will install plugins
-    nvim --headless "+Lazy sync" +qa || echo "Plugin installation will complete on first launch"
-  fi
+# Link Neovim configuration files
+echo "Setting up Neovim configs..."
+if [ -d "$HOME/.dotfiles/nvim" ]; then
+    mkdir -p "$HOME/.config"
+    rm -rf "$HOME/.config/nvim"
+    ln -sf "$HOME/.dotfiles/nvim" "$HOME/.config/nvim"
+    install_neovim
+    echo "Neovim configuration linked successfully."
+else
+    echo "Warning: Neovim configuration not found in dotfiles."
+fi
+
+# Install LazyVim
+if [ ! -f "$HOME/.config/nvim/lazy-lock.json" ]; then
+  echo "Setting up LazyVim plugin manager..."
+  # First launch of Neovim will install plugins
+  nvim --headless "+Lazy sync" +qa || echo "Plugin installation will complete on first launch"
+fi
 else
   echo "Warning: Neovim configuration not found in dotfiles."
 fi
@@ -82,7 +102,7 @@ fi
 if [ "$SHELL" != "$(which zsh)" ]; then
   echo "Attempting to set zsh as default shell..."
   which zsh | sudo tee -a /etc/shells >/dev/null 2>&1 || true
-  sudo chsh -s "$(which zsh)" || echo "Could not change shell automatically. You may need to run 'chsh -s $(which zsh)' manually."
+  sudo chsh -s "$(which zsh)" "$(whoami)"|| echo "Could not change shell automatically. You may need to run 'chsh -s $(which zsh)' manually."
   echo "Note: You'll need to log out and back in for the shell change to take effect."
 fi
 
