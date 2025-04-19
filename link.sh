@@ -21,12 +21,12 @@ check_command() {
 check_command zsh
 check_command git
 check_command curl
-check_command nvim
+check_command neovim
 
 # link neovim configs
-# Link Neovim configuration files
 echo "Linking Neovim configuration files..."
 if [ -d "$HOME/.dotfiles/nvim" ]; then
+  mkdir -p "$HOME/.config"
   rm -rf "$HOME/.config/nvim"
   ln -sf "$HOME/.dotfiles/nvim" "$HOME/.config/nvim"
   echo "Neovim configuration linked successfully."
