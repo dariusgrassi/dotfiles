@@ -63,7 +63,7 @@ fi
 if [ "$SHELL" != "$(which zsh)" ]; then
     echo "Attempting to set zsh as default shell..."
     which zsh | sudo tee -a /etc/shells >/dev/null 2>&1 || true
-    chsh -s "$(which zsh)" || echo "Could not change shell automatically. You may need to run 'chsh -s $(which zsh)' manually."
+    sudo chsh -s "$(which zsh)" || echo "Could not change shell automatically. You may need to run 'chsh -s $(which zsh)' manually."
     echo "Note: You'll need to log out and back in for the shell change to take effect."
 fi
 
