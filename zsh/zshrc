@@ -19,15 +19,20 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Source powerlevel10k theme
 if [[ "$MACOS" == true ]]; then
-    # allows zsh to find homebrew packages on macOS
-    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+    # macOS paths first
     if [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
         source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+    elif [[ -f $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+        source $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
     fi
+
     # macOS syntax highlighting source
     if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
         source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    elif [[ -f $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+        source $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     fi
 else
     # Linux powerlevel10k source (common locations)
@@ -35,10 +40,15 @@ else
         source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
     elif [[ -f /usr/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
         source /usr/share/powerlevel10k/powerlevel10k.zsh-theme
+    elif [[ -f $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+        source $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
     fi
+
     # Linux syntax highlighting source
     if [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
         source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    elif [[ -f $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+        source $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     fi
 fi
 

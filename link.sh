@@ -25,16 +25,28 @@ check_command curl
 # download my dotfiles
 if [ ! -d "$HOME/.dotfiles" ]; then
     echo "Cloning dotfiles repository..."
-    git clone https://github.com/dariusgrassi/dotfiles.git "$HOME/.dotfiles"
+    git clone https://github.com/dariusgrassi/dotfiles.git "$HOME/.dotfiles" || {
+        echo "Failed to clone dotfiles repository. Please check access."
+        exit 1
+    }
 else
     echo "Updating dotfiles repository..."
     cd "$HOME/.dotfiles" && git pull
 fi
 
+# Create ZSH plugin directory
+mkdir -p "$HOME/.zsh/plugins"
+
 # download powerlevel10k prompt theme
-if [ ! -d "$HOME/powerlevel10k" ]; then
+if [ ! -d "$HOME/.zsh/plugins/powerlevel10k" ]; then
     echo "Installing Powerlevel10k..."
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/powerlevel10k"
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/.zsh/plugins/powerlevel10k"
+fi
+
+# download zsh-syntax-highlighting
+if [ ! -d "$HOME/.zsh/plugins/zsh-syntax-highlighting" ]; then
+    echo "Installing zsh-syntax-highlighting..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.zsh/plugins/zsh-syntax-highlighting"
 fi
 
 # link my zshrc and p10k configs
@@ -47,11 +59,12 @@ if [ -f "$HOME/.dotfiles/zsh/.p10k.zsh" ]; then
     ln -sf "$HOME/.dotfiles/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
 fi
 
-# make sure zsh is the default shell
+# Try to set zsh as the default shell, but don't fail if it doesn't work
 if [ "$SHELL" != "$(which zsh)" ]; then
-    echo "Setting zsh as default shell..."
-    chsh -s "$(which zsh)"
-    echo "You'll need to log out and back in for the shell change to take effect."
+    echo "Attempting to set zsh as default shell..."
+    which zsh | sudo tee -a /etc/shells >/dev/null 2>&1 || true
+    chsh -s "$(which zsh)" || echo "Could not change shell automatically. You may need to run 'chsh -s $(which zsh)' manually."
+    echo "Note: You'll need to log out and back in for the shell change to take effect."
 fi
 
 echo "Setup complete! Starting zsh..."
