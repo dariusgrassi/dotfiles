@@ -1,93 +1,72 @@
-# If you come from bash you might have to change your $PATH.
+# Path configuration
 export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
-export PATH=$PATH:/Users/dariusgrassi/.spicetify
 
-# Detect OS platform
-if [[ "$(uname)" == "Darwin" ]]; then
-    export MACOS=true
-    export LINUX=false
-else
-    export MACOS=false
-    export LINUX=true
+# Detect OS platform once
+export MACOS=$([ "$(uname)" = "Darwin" ] && echo true || echo false)
+export LINUX=$([ "$MACOS" = "false" ] && echo true || echo false)
+
+# Add platform-specific paths
+if [[ "$MACOS" == true ]]; then
+    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+    export PATH=$PATH:/Users/dariusgrassi/.spicetify
 fi
 
-# instant prompt starts the prompt instantly while zsh modules are still
-# loading in the background, making zsh appear faster
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# Enable Powerlevel10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Source powerlevel10k theme
-if [[ "$MACOS" == true ]]; then
-    # allows zsh to find homebrew packages
-    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+# Define possible plugin locations (first found will be used)
+p10k_locations=(
+    "/opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme"  # Only keep homebrew for macOS
+    "$HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme"
+)
 
-    # macOS paths first
-    if [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-        source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-    elif [[ -f $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-        source $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
+syn_highlight_locations=(
+    "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"  # Only keep homebrew for macOS
+    "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+)
+
+# Source Powerlevel10k theme (first found location)
+for location in "${p10k_locations[@]}"; do
+    if [[ -f "$location" ]]; then
+        source "$location"
+        break
     fi
+done
 
-    # macOS syntax highlighting source
-    if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-        source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    elif [[ -f $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-        source $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Source syntax highlighting (first found location)
+for location in "${syn_highlight_locations[@]}"; do
+    if [[ -f "$location" ]]; then
+        source "$location"
+        break
     fi
-else
-    # Linux powerlevel10k source (common locations)
-    if [[ -f /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme ]]; then
-        source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
-    elif [[ -f /usr/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-        source /usr/share/powerlevel10k/powerlevel10k.zsh-theme
-    elif [[ -f $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-        source $HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
-    fi
+done
 
-    # Linux syntax highlighting source
-    if [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-        source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    elif [[ -f $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-        source $HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    fi
-fi
+# Load personal Powerlevel10k configuration
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-# this is my user-local config of powerlevel10k
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# this enables a vi keymap for zsh; need explicit ctrl R after
+# Vi mode settings
 bindkey -v
 bindkey '^R' history-incremental-search-backward
 bindkey '^F' history-incremental-search-forward
 
-
-# this starts the zsh completion system
+# Completion system setup
 autoload -Uz compinit && compinit
-
-# this tells zsh to match any lowercase or capital letters with any
-# lowercase or capital letters, only if there are no case-sensitive
-# matches
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
-
-# this highlights menus as you tab through them
 zstyle ':completion:*' menu select
+bindkey '^[[Z' reverse-menu-complete
 
-# iTerm2 shell integration (macOS only)
+# macOS-specific configurations
 if [[ "$MACOS" == true ]]; then
-    test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+    [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
 fi
 
-# aliases
+# Common aliases
 alias ls='ls --color=auto'
 alias cp='cp -v'
 alias vim='nvim'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias ....='cd ../../../..'
-
+alias .....='cd ../../../..'
