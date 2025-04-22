@@ -18,8 +18,8 @@ sudo apt-get update && sudo apt-get install -y \
   zsh \
   git \
   curl \
-  ripgrep
-
+  ripgrep \
+  tmux
 # Install latest Neovim
 echo "Installing latest Neovim..."
 mkdir -p "$HOME/.local/bin"
@@ -45,6 +45,16 @@ fi
 if [ -f "$HOME/.config/nvim/lazy-lock.json" ]; then
   echo "LazyVim lock file found, syncing plugins..."
   nvim --headless "+Lazy sync" +qa || echo "Plugin installation will complete on first launch"
+fi
+
+# Setup tmux
+echo "Setting up tmux configuration..."
+if [ -f "$HOME/.dotfiles/tmux/tmux.conf" ]; then
+  rm -f "$HOME/.tmux.conf"
+  ln -sf "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"
+  echo "Tmux configuration linked successfully."
+else
+  echo "Warning: Tmux configuration not found in dotfiles."
 fi
 
 # Setup ZSH
@@ -79,6 +89,3 @@ if [ "$SHELL" != "$(which zsh)" ]; then
   sudo chsh -s "$(which zsh)" "$(whoami)" || echo "Could not change shell. Run 'chsh -s $(which zsh)' manually."
   echo "Note: Log out and back in for shell change to take effect."
 fi
-
-echo "Setup complete! Starting zsh..."
-exec zsh -l
