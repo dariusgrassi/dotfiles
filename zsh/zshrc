@@ -63,8 +63,10 @@ if [[ "$MACOS" == true ]]; then
 fi
 
 # Common aliases
-alias ls='ls --color=auto'
+alias ls='ls --color=auto -l'
+alias python='python3'
 alias cp='cp -v'
+alias rm='rm -i'
 alias vim='nvim'
 alias ..='cd ..'
 alias ...='cd ../..'
