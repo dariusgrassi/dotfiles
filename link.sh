@@ -20,6 +20,7 @@ sudo apt-get update && sudo apt-get install -y \
   curl \
   ripgrep \
   tmux
+
 # Install latest Neovim
 echo "Installing latest Neovim..."
 mkdir -p "$HOME/.local/bin"
@@ -53,6 +54,14 @@ if [ -f "$HOME/.dotfiles/tmux/tmux.conf" ]; then
   rm -f "$HOME/.tmux.conf"
   ln -sf "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"
   echo "Tmux configuration linked successfully."
+
+  # Install TPM if missing
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Installing TPM (Tmux Plugin Manager)..."
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+  else
+    echo "TPM already installed."
+  fi
 else
   echo "Warning: Tmux configuration not found in dotfiles."
 fi
@@ -83,7 +92,7 @@ if [ -f "$HOME/.dotfiles/zsh/.p10k.zsh" ]; then
   ln -sf "$HOME/.dotfiles/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
 fi
 
-# Set ZSH as default shell (simplified)
+# Set ZSH as default shell
 if [ "$SHELL" != "$(which zsh)" ]; then
   echo "Setting zsh as default shell..."
   sudo chsh -s "$(which zsh)" "$(whoami)" || echo "Could not change shell. Run 'chsh -s $(which zsh)' manually."
