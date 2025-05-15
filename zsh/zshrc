@@ -62,6 +62,18 @@ if [[ "$MACOS" == true ]]; then
     [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
 fi
 
+# Auto-activate and deactivate venv for dirs containing one
+autoload -U add-zsh-hook
+function auto_venv_manage() {
+  if [[ -n "$VIRTUAL_ENV" && ! -f ".venv/bin/activate" ]]; then
+    deactivate
+  elif [[ -z "$VIRTUAL_ENV" && -f ".venv/bin/activate" ]]; then
+    source .venv/bin/activate
+  fi
+}
+add-zsh-hook chpwd auto_venv_manage
+auto_venv_manage  # run on shell start
+
 # Common aliases
 alias ls='ls --color=auto -l'
 alias python='python3'

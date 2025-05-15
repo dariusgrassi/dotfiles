@@ -1,7 +1,10 @@
 #!/bin/bash
 set -e
 
-# First check if dotfiles exist or need to be cloned
+# note that this script is intended primary for linux machines - use
+# with caution on other operating systems
+
+# check if dotfiles exist
 if [ ! -d "$HOME/.dotfiles" ]; then
   echo "Cloning dotfiles repository..."
   git clone https://github.com/dariusgrassi/dotfiles.git "$HOME/.dotfiles" || {
@@ -54,14 +57,6 @@ if [ -f "$HOME/.dotfiles/tmux/tmux.conf" ]; then
   rm -f "$HOME/.tmux.conf"
   ln -sf "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"
   echo "Tmux configuration linked successfully."
-
-  # Install TPM if missing
-  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    echo "Installing TPM (Tmux Plugin Manager)..."
-    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-  else
-    echo "TPM already installed."
-  fi
 else
   echo "Warning: Tmux configuration not found in dotfiles."
 fi
@@ -92,7 +87,7 @@ if [ -f "$HOME/.dotfiles/zsh/.p10k.zsh" ]; then
   ln -sf "$HOME/.dotfiles/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
 fi
 
-# Set ZSH as default shell
+# Set zsh as default shell
 if [ "$SHELL" != "$(which zsh)" ]; then
   echo "Setting zsh as default shell..."
   sudo chsh -s "$(which zsh)" "$(whoami)" || echo "Could not change shell. Run 'chsh -s $(which zsh)' manually."
