@@ -1,6 +1,9 @@
 # Path configuration
 export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
 
+# Force colour support
+export TERM=xterm-256color
+
 # Detect OS platform once
 export MACOS=$([ "$(uname)" = "Darwin" ] && echo true || echo false)
 export LINUX=$([ "$MACOS" = "false" ] && echo true || echo false)

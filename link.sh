@@ -26,12 +26,26 @@ sudo apt-get update && sudo apt-get install -y \
 
 # Install latest Neovim
 echo "Installing latest Neovim..."
-mkdir -p "$HOME/.local/bin"
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
-chmod u+x nvim-linux-x86_64.appimage
-mv nvim-linux-x86_64.appimage "$HOME/.local/bin/nvim"
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-  echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$HOME/.zshrc"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS path
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew not found. Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)" # M1 Macs
+  fi
+
+  echo "Installing Neovim via Homebrew..."
+  brew install neovim
+else
+  # Assume Linux
+  mkdir -p "$HOME/.local/bin"
+  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+  chmod u+x nvim-linux-x86_64.appimage
+  mv nvim-linux-x86_64.appimage "$HOME/.local/bin/nvim"
+
+  if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$HOME/.zshrc"
+  fi
 fi
 
 # Link Neovim configs
