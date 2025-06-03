@@ -60,11 +60,6 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 bindkey '^[[Z' reverse-menu-complete
 
-# macOS-specific configurations
-if [[ "$MACOS" == true ]]; then
-    [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
-fi
-
 # Auto-activate and deactivate venv for dirs containing one
 autoload -U add-zsh-hook
 function auto_venv_manage() {
