@@ -1,33 +1,28 @@
 return {
   { "neovim/nvim-lspconfig" },
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     build = ":MasonUpdate",
     config = true,
   },
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pyright" },
+        ensure_installed = { "pyright", "clangd" },
       })
       require("lspconfig").pyright.setup({})
+      require("lspconfig").clangd.setup({})
     end,
   },
-  -- lsp type signature
   {
     "ray-x/lsp_signature.nvim",
     event = "InsertEnter",
-    opts = {
-      -- cfg options
-    },
+    opts = {},
   },
-  -- lsp progress
   {
     "j-hui/fidget.nvim",
-    opts = {
-      -- options
-    },
+    opts = {},
   },
 }
