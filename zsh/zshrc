@@ -60,18 +60,6 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 bindkey '^[[Z' reverse-menu-complete
 
-# Auto-activate and deactivate venv for dirs containing one
-autoload -U add-zsh-hook
-function auto_venv_manage() {
-  if [[ -n "$VIRTUAL_ENV" && ! -f ".venv/bin/activate" ]]; then
-    deactivate
-  elif [[ -z "$VIRTUAL_ENV" && -f ".venv/bin/activate" ]]; then
-    source .venv/bin/activate
-  fi
-}
-add-zsh-hook chpwd auto_venv_manage
-auto_venv_manage  # run on shell start
-
 # Common aliases
 alias ls='ls --color=auto -l'
 alias python='python3'
@@ -84,3 +72,7 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias gst='git status'
 alias gca='git commit -a'
+eval "$(pyenv init -)"
+
+# To customize prompt, run `p10k configure` or edit ~/.dotfiles/zsh/.p10k.zsh.
+[[ ! -f ~/.dotfiles/zsh/.p10k.zsh ]] || source ~/.dotfiles/zsh/.p10k.zsh
