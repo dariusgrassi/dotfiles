@@ -1,3 +1,6 @@
+# Disable start/stop flow control to free up Ctrl-S
+stty -ixon
+
 # 1. Powerlevel10k instant prompt (Must be line 1)
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -38,6 +41,13 @@ setopt SHARE_HISTORY EXTENDED_HISTORY INC_APPEND_HISTORY HIST_IGNORE_DUPS
 # 5. Behavior & Aliases
 export TERM=xterm-256color
 bindkey -v
+
+# Explicitly bind search for both Vi-Insert and Vi-Command modes
+bindkey -M viins '^R' history-incremental-search-backward
+bindkey -M vicmd '^R' history-incremental-search-backward
+bindkey -M viins '^S' history-incremental-search-forward
+bindkey -M vicmd '^S' history-incremental-search-forward
+
 autoload -Uz compinit && compinit -i
 
 # Case-insensitive (all), partial-word and then substring completion
