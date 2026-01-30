@@ -1,78 +1,59 @@
-# Path configuration
-export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
-
-# Force colour support
-export TERM=xterm-256color
-
-# Detect OS platform once
-export MACOS=$([ "$(uname)" = "Darwin" ] && echo true || echo false)
-export LINUX=$([ "$MACOS" = "false" ] && echo true || echo false)
-
-# Add platform-specific paths
-if [[ "$MACOS" == true ]]; then
-    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
-    export PATH=$PATH:/Users/dariusgrassi/.spicetify
-fi
-
-# Enable Powerlevel10k instant prompt
+# 1. Powerlevel10k instant prompt (Must be line 1)
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Define possible plugin locations (first found will be used)
-p10k_locations=(
-    "/opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme"  # Only keep homebrew for macOS
-    "$HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme"
+# 2. Path & Environment
+typeset -U path
+path=(
+  $HOME/.local/bin
+  /usr/local/bin
+  /Users/dwg/.antigravity/antigravity/bin
+  $path
 )
 
-syn_highlight_locations=(
-    "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"  # Only keep homebrew for macOS
-    "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-)
+[[ "$(uname)" == "Darwin" ]] && MACOS=true || MACOS=false
+if [[ "$MACOS" == true ]]; then
+  [[ -d /opt/homebrew/bin ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-# Source Powerlevel10k theme (first found location)
-for location in "${p10k_locations[@]}"; do
-    if [[ -f "$location" ]]; then
-        source "$location"
-        break
-    fi
-done
+# 3. Plugins & Theme
+p10k_locations=("$HOME/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme" "/opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme")
+syn_locations=("$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh")
+sug_locations=("$HOME/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh")
 
-# Source syntax highlighting (first found location)
-for location in "${syn_highlight_locations[@]}"; do
-    if [[ -f "$location" ]]; then
-        source "$location"
-        break
-    fi
-done
+for loc in "${p10k_locations[@]}"; [[ -f "$loc" ]] && { source "$loc"; break };
+for loc in "${syn_locations[@]}"; [[ -f "$loc" ]] && { source "$loc"; break };
+for loc in "${sug_locations[@]}"; [[ -f "$loc" ]] && { source "$loc"; break };
 
-# Load personal Powerlevel10k configuration
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 
-# Vi mode settings
+# 4. History Settings
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY EXTENDED_HISTORY INC_APPEND_HISTORY HIST_IGNORE_DUPS
+
+# 5. Behavior & Aliases
+export TERM=xterm-256color
 bindkey -v
-bindkey '^R' history-incremental-search-backward
-bindkey '^F' history-incremental-search-forward
+autoload -Uz compinit && compinit -i
 
-# Completion system setup
-autoload -Uz compinit && compinit
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+# Case-insensitive (all), partial-word and then substring completion
+# This allows 'readme' -> 'README' and 'p10' -> 'p10k-instant-prompt...'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+# Other completion behavior
 zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 bindkey '^[[Z' reverse-menu-complete
 
-# Common aliases
-alias ls='ls --color=auto -l'
-alias python='python3'
-alias cp='cp -v'
-alias rm='rm -i'
 alias vim='nvim'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
 alias gst='git status'
-alias gca='git commit -a'
-eval "$(pyenv init -)"
+[[ -d $HOME/.pyenv ]] && eval "$(pyenv init -)"
 
-# To customize prompt, run `p10k configure` or edit ~/.dotfiles/zsh/.p10k.zsh.
-[[ ! -f ~/.dotfiles/zsh/.p10k.zsh ]] || source ~/.dotfiles/zsh/.p10k.zsh
+# 6. SSH Agent
+if [[ "$MACOS" == true ]]; then
+  /usr/bin/ssh-add --apple-load-keychain ~/.ssh/id_rsa >/dev/null 2>&1
+fi

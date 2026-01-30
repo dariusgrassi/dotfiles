@@ -1,17 +1,20 @@
 return {
-  -- Add the monokai-pro theme plugin
   {
     "loctvl842/monokai-pro.nvim",
-    priority = 1000, -- Make sure it loads early
+    lazy = false,
+    priority = 1000,
     config = function()
-      -- Optional: configure the theme
       require("monokai-pro").setup({
-        filter = "pro", -- Or "classic", "machine", "octagon", "ristretto", "spectrum"
+        transparent_background = false,
+        terminal_colors = true,
+        filter = "pro", -- Validated filter for the 2.0.0+ release
+        styles = {
+          italic = true,
+        },
       })
+      vim.cmd([[colorscheme monokai-pro]])
     end,
   },
-
-  -- Override LazyVim's default theme
   {
     "LazyVim/LazyVim",
     opts = {

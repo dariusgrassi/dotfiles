@@ -3,17 +3,31 @@ return {
   {
     "mason-org/mason.nvim",
     build = ":MasonUpdate",
-    config = true,
+    opts = {
+      ensure_installed = {
+        "pyright",
+        "clangd",
+      },
+    },
   },
   {
     "mason-org/mason-lspconfig.nvim",
     config = function()
-      require("mason").setup()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "pyright", "clangd" },
+      local lspconfig = require("lspconfig")
+
+      -- Python setup
+      lspconfig.pyright.setup({})
+
+      -- C/C++ setup
+      lspconfig.clangd.setup({
+        cmd = {
+          "clangd",
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=iwyu",
+          "--completion-style=detailed",
+        },
       })
-      require("lspconfig").pyright.setup({})
-      require("lspconfig").clangd.setup({})
     end,
   },
   {
